@@ -71,7 +71,7 @@ def __normlize__(X):
 
 
 def deep_feature_extraction():
-    batch_size = 400
+    batch_size = 300
     images_paths, cutoffs = create_image_list()
     logger.info('load image paths done. #video: {:5d}'.format(len(cutoffs)))
 
@@ -140,4 +140,3 @@ if __name__ == '__main__':
 '''bash
 CUDA_VISIBLE_DEVICES=12 python videoprocess/deepfeatures_extraction.py --dataname svd-example
 '''
-
