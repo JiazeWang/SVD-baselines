@@ -49,9 +49,9 @@ args.device = 'cpu'
 if torch.cuda.is_available():
     args.device = 'cuda'
 
-args.path = '/home/jiangqy/'
-args.projpath = os.path.join(args.path, 'program', 'SVD-baselines')
-args.datapath = os.path.join('/data1/jiangqy/dataset/', args.dataname)
+#args.path = '/home/jiangqy/'
+args.projpath = os.path.join('/mnt/SSD/jzwang/code20', 'SVD-baselines')
+args.datapath = os.path.join('/mnt/SSD/jzwang/dataset')
 args.configpath = os.path.join(args.projpath, 'config')
 
 args.metadatapath = os.path.join(args.datapath, 'metadata')
