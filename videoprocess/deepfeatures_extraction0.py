@@ -23,7 +23,7 @@ from utils.args import opt
 from utils.logger import logger
 from data.dataset import create_loader
 from modules.vgg import vgg16
-from models import TSN
+
 
 def create_image_list():
     def __load_image_paths__(framepath):
@@ -78,7 +78,18 @@ def deep_feature_extraction():
     dataloader = create_loader(images_paths, batch_size)
     logger.info('create data loader done')
 
-    model = vgg16(pretrained=True).to(opt['device'])
+    #model = vgg16(pretrained=True).to(opt['device'])
+    net = TSN(num_class=1000, 1, args.modality="RGB",
+          base_model='resnet50',
+          consensus_type='avg',
+          dropout=0.8)
+
+    checkpoint = torch.load(args.weights)
+    print("model epoch {} best prec@1: {}".format(checkpoint['epoch'], checkpoint['best_prec1']))
+
+    base_dict = {'.'.join(k.split('.')[1:]): v for k,v in list(checkpoint['state_dict'].items())}
+    net.load_state_dict(base_dict)
+    model = net.to(opt['device'])
     model.eval()
     logger.info('create cnn-model done')
 
