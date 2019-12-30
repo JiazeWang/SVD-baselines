@@ -23,7 +23,7 @@ from utils.args import opt
 from utils.logger import logger
 from data.dataset import create_loader
 from modules.vgg import vgg16
-
+from models import TSN
 
 def create_image_list():
     def __load_image_paths__(framepath):
