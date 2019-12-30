@@ -71,12 +71,7 @@ def __normlize__(X):
 
 
 def deep_feature_extraction():
-    batch_size = 320
-    images_paths, cutoffs = create_image_list()
-    logger.info('load image paths done. #video: {:5d}'.format(len(cutoffs)))
 
-    dataloader = create_loader(images_paths, batch_size)
-    logger.info('create data loader done')
 
     #model = vgg16(pretrained=True).to(opt['device'])
     net = TSN(num_class=1000, num_segments=1, modality="RGB",
@@ -92,6 +87,14 @@ def deep_feature_extraction():
     model = net.to(opt['device'])
     model.eval()
     logger.info('create cnn-model done')
+
+
+    batch_size = 320
+    images_paths, cutoffs = create_image_list()
+    logger.info('load image paths done. #video: {:5d}'.format(len(cutoffs)))
+
+    dataloader = create_loader(images_paths, batch_size)
+    logger.info('create data loader done')
 
     count = 0
     buffer = []
