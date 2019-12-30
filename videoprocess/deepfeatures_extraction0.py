@@ -84,7 +84,7 @@ def deep_feature_extraction():
           consensus_type='avg',
           dropout=0.8)
 
-    checkpoint = torch.load(args.weights)
+    checkpoint = torch.load('svd_rgb_model_best.pth.tar')
     print("model epoch {} best prec@1: {}".format(checkpoint['epoch'], checkpoint['best_prec1']))
 
     base_dict = {'.'.join(k.split('.')[1:]): v for k,v in list(checkpoint['state_dict'].items())}
