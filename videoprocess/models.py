@@ -3,7 +3,7 @@ from torch import nn
 from basic_ops import ConsensusModule, Identity
 from transforms import *
 from torch.nn.init import normal, constant
-
+from modules.vgg import vgg16
 class TSN(nn.Module):
     def __init__(self, num_class, num_segments, modality,
                  base_model='resnet101', new_length=None,
@@ -59,12 +59,13 @@ TSN Configurations:
             self.partialBN(True)
 
     def _prepare_tsn(self, num_class):
-        feature_dim = getattr(self.base_model, self.base_model.last_layer_name).in_features
+        #feature_dim = getattr(self.base_model, self.base_model.last_layer_name).in_features
+        feature_dim = 4096
         if self.dropout == 0:
             setattr(self.base_model, self.base_model.last_layer_name, nn.Linear(feature_dim, num_class))
             self.new_fc = None
         else:
-            setattr(self.base_model, self.base_model.last_layer_name, nn.Dropout(p=self.dropout))
+            #setattr(self.base_model, self.base_model.last_layer_name, nn.Dropout(p=self.dropout))
             self.new_fc = nn.Linear(feature_dim, num_class)
 
         std = 0.001
@@ -79,8 +80,10 @@ TSN Configurations:
     def _prepare_base_model(self, base_model):
 
         if 'resnet' in base_model or 'vgg' in base_model:
-            self.base_model = getattr(torchvision.models, base_model)(True)
-            self.base_model.last_layer_name = 'fc'
+            #self.base_model = getattr(torchvision.models, base_model)(True)
+            self.base_model = vgg16(pretrained=True)
+            #self.base_model.last_layer_name = 'fc'
+            self.base_model.last_layer_name = 'classifier'
             self.input_size = 224
             self.input_mean = [0.485, 0.456, 0.406]
             self.input_std = [0.229, 0.224, 0.225]
@@ -195,13 +198,14 @@ TSN Configurations:
             input = self._get_diff(input)
 
         base_out = self.base_model(input.view((-1, sample_len) + input.size()[-2:]))
+        """
+        if self.dropout > 0:
+            base_out = self.new_fc(base_out)
 
-        #if self.dropout > 0:
-        #    base_out = self.new_fc(base_out)
-
-        #if not self.before_softmax:
-        #    base_out = self.softmax(base_out)
-        #if self.reshape:
+        if not self.before_softmax:
+            base_out = self.softmax(base_out)
+        if self.reshape:
+        """
         base_out = base_out.view((-1, self.num_segments) + base_out.size()[1:])
 
         output = self.consensus(base_out)
