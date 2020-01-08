@@ -87,7 +87,7 @@ def deep_feature_extraction():
     net.load_state_dict(base_dict)
 
     #model = net.to(opt['device'])
-    model = torch.nn.DataParallel(net).cuda()
+    model = torch.nn.DataParallel(net.cuda(), device_ids=[0,1,2,3,4,5,6,7])
     model.eval()
     logger.info('create cnn-model done')
 
