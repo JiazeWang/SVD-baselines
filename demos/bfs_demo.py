@@ -40,7 +40,7 @@ def main():
     logger.info('load gnds and unlabeled keys done. #query: {}'.format(len(gnds)))
 
     # calculate map
-    map = calc_euclidean_search(features, unlabeled_keys, gnds)
+    map = calc_euclidean_search(features, unlabeled_keys, gnds, verbose=True)
     logger.info('map: {:.4f}'.format(map))
 
     logger.info('all done')
@@ -53,4 +53,3 @@ if __name__ == "__main__":
 '''bash
 python demos/bfs_demo.py --dataname svd-example
 '''
-
