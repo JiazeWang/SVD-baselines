@@ -11,7 +11,7 @@ import torchvision.transforms as transforms
 from PIL import Image
 from torch.utils.data.dataset import Dataset
 from torch.utils.data import DataLoader
-
+from transforms import *
 
 class ImageLoader(Dataset):
     def __init__(self, images_paths, transform):
@@ -36,7 +36,8 @@ def create_loader(images_paths, batch_size):
     transformation = transforms.Compose([
         transforms.Resize(256),
         transforms.CenterCrop(224),
-        transforms.ToTensor(),
+        #transforms.ToTensor(),
+        ToTorchFormatTensor_Gray(div=True)
         normalize
     ])
 
@@ -46,5 +47,3 @@ def create_loader(images_paths, batch_size):
                             shuffle=False,
                             num_workers=10)
     return dataloader
-
-
