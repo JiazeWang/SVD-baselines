@@ -37,7 +37,7 @@ def create_loader(images_paths, batch_size):
         transforms.Resize(256),
         transforms.CenterCrop(224),
         #transforms.ToTensor(),
-        ToTorchFormatTensor_Gray(div=True)
+        ToTorchFormatTensor_Gray(div=True),
         normalize
     ])
 
