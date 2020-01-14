@@ -11,7 +11,7 @@ import torchvision.transforms as transforms
 from PIL import Image
 from torch.utils.data.dataset import Dataset
 from torch.utils.data import DataLoader
-from transforms import ToTorchFormatTensor_Gray
+from data.transforms import ToTorchFormatTensor_Gray
 
 class ImageLoader(Dataset):
     def __init__(self, images_paths, transform):
