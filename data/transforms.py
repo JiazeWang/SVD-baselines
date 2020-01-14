@@ -284,12 +284,48 @@ class ToTorchFormatTensor(object):
             img = img.transpose(0, 1).transpose(0, 2).contiguous()
         return img.float().div(255) if self.div else img.float()
 
+class ToTorchFormatTensor_Gray(object):
+    """ Converts a PIL.Image (RGB) or numpy.ndarray (H x W x C) in the range [0, 255]
+    to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0] """
+    def __init__(self, div=True):
+        self.div = div
+
+    def __call__(self, pic):
+        if isinstance(pic, np.ndarray):
+            # handle numpy array
+            img = torch.from_numpy(pic).permute(2, 0, 1).contiguous()
+        else:
+            # handle PIL Image
+            img = torch.ByteTensor(torch.ByteStorage.from_buffer(pic.tobytes()))
+            img = img.view(pic.size[1], pic.size[0], len(pic.mode))
+            # put it from HWC to CHW format
+            # yikes, this transpose takes 80% of the loading time/CPU
+            img = img.transpose(0, 1).transpose(0, 2).contiguous()
+            R = img[0]
+            G = img[1]
+            B = img[2]
+            bw = 0.299*R+0.587*G+0.114*B
+            img[0] = bw
+            img[1] = bw
+            img[2] = bw
+        return img.float().div(255) if self.div else img.float()
 
 class IdentityTransform(object):
 
     def __call__(self, data):
         return data
-
+"""
+class Gray(object):
+    def __call__(self, tensor):
+        # TODO: make efficient
+        R = tensor[0]
+        G = tensor[1]
+        B = tensor[2]
+        tensor[0]=0.299*R+0.587*G+0.114*B
+        tensor = tensor[0]
+        tensor = tensor.view(1,200,200)
+        return tensor
+"""
 
 if __name__ == "__main__":
     trans = torchvision.transforms.Compose([
