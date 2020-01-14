@@ -92,7 +92,7 @@ def deep_feature_extraction():
     logger.info('create cnn-model done')
 
 
-    batch_size = 2560
+    batch_size = 1280
     images_paths, cutoffs = create_image_list()
     logger.info('load image paths done. #video: {:5d}'.format(len(cutoffs)))
 
