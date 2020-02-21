@@ -78,7 +78,7 @@ def deep_feature_extraction():
     dataloader = create_loader(images_paths, batch_size)
     logger.info('create data loader done')
 
-    model = vgg16(pretrained=True))
+    model = vgg16(pretrained=True)
     model = torch.nn.DataParallel(net.cuda(), device_ids=[0,1,2,3,4,5,6,7])
     model.eval()
     logger.info('create cnn-model done')
