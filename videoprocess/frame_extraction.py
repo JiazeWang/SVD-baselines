@@ -47,7 +47,8 @@ class FrameExtractor:
             while cap.isOpened():
                 ret, frame = cap.read()
                 if isinstance(frame, np.ndarray):
-                    if int(count * fps % (round(cnt))) == 0:
+                    #if int(count * fps % (round(cnt))) == 0:
+                    if int(count % fps) == 0:
                         frames.append(frame)
                         num_frame += 1
                 else:
