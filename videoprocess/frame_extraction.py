@@ -70,7 +70,8 @@ class FrameExtractor:
             frames = []
             for count, im in enumerate(reader):
                 image = skimage.img_as_uint(im).astype(np.uint8)
-                if int(count * fps % (round(duration))) == 0:
+                #if int(count * fps % (round(duration))) == 0:
+                 if int(count % fps) == 0:
                     frames.append(image)
                     num_frame += 1
             if num_frame > 0:
