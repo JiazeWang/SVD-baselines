@@ -42,7 +42,7 @@ def create_image_list():
     cutoffs = []
     num_processing = 0.
     for idx, video in enumerate(videos):
-        frame_path = os.path.join(opt['framepath'], video[0:-4])
+        frame_path = os.path.join(opt['framepath'], video)
         feature_path = os.path.join(opt['featurepath'], video + '.h5')
         if not os.path.exists(feature_path):
             image_paths = __load_image_paths__(frame_path)
