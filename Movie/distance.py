@@ -41,3 +41,25 @@ def compute_dists(query_features, refer_features):
     sorted_dists = unsorted_dists[rows, idxs]
     # sorted_dists = np.sort(unsorted_dists)
     return idxs, unsorted_dists, sorted_dists
+
+refer_video = []
+copy_video = []
+with open("refer_list.txt", r) as f:
+    lines = f.readlines()
+for line in lines:
+    line = line.rstrip()
+    refer_video.append(line)
+with open("video.txt", r) as f:
+    lines = f.readlines()
+for line in lines:
+    line = line.rstrip()
+    copy_video.append(line)
+
+copy_video_h5 = h5py.File("videos-features.h5")
+copy_video_sum = copy_video_h5["000001.mp4"]
+for i in range(1, len(copy_video)):
+    append_video = copy_video_h5[copy_video[i]]
+    copy_video_sum = np.vstack((copy_video_sum, append_video))
+print(copy_video_sum.shape)
+#for in i range(0,len(refer_video)) 
+           
