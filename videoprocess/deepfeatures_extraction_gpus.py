@@ -27,10 +27,12 @@ import torch.nn.parallel
 
 def create_image_list():
     def __load_image_paths__(framepath):
-        infofile = os.path.join(framepath, 'info.h5')
-        fp = h5py.File(infofile, mode='r')
-        num_frames = int(fp['num_frames'][()])
-        fp.close()
+        #infofile = os.path.join(framepath, 'info.h5')
+        #fp = h5py.File(infofile, mode='r')
+        #num_frames = int(fp['num_frames'][()])
+        #fp.close()
+        dir_files = os.listdir(framepath)
+        num_frames = len(dir_files)
         images_paths = []
         for ii in range(num_frames):
             image_path = os.path.join(framepath, '{:04d}.jpg'.format(ii))
