@@ -43,11 +43,11 @@ class VideoFeatureExtractor(object):
         return X
 
     def normalization(self, params):
-        featurepath = os.path.join(opt['featurepath'], 'copy-frame-feature-1fps.h5')
+        featurepath = os.path.join(opt['featurepath'], 'refer-frames-features.h5')
         fp = h5py.File(featurepath, mode='r')
         index, video = params[0], params[1]
         framefeatures = np.array(fp[video][()]).squeeze()
-        txt = os.path.join("/mnt/SSD/jzwang/dataset/shot_movie", video[0:-4]+'.txt')
+        txt = os.path.join("/mnt/SSD/jzwang/dataset/shot", video[0:-4]+'.txt')
         if framefeatures.ndim == 1:
             framefeatures = np.array([framefeatures, framefeatures])
         vfeature = self.__normalize__(framefeatures)
@@ -83,7 +83,7 @@ class VideoFeatureExtractor(object):
 
     def save_features(self):
         vfeatures = dict(self.vfeatures)
-        vfeaturepath = os.path.join(opt['featurepath'], 'copy-shot-feature-1fps.h5')
+        vfeaturepath = os.path.join(opt['featurepath'], 'refer-shot-feature-1fps.h5')
         fp = h5py.File(vfeaturepath, mode='w')
         for video in vfeatures:
             feature = vfeatures[video]

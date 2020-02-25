@@ -1,4 +1,6 @@
-
+import h5py
+import time
+import numpy as np
 def compute_similarities(query_features, refer_features):
     """
       用于计算两组特征(已经做过l2-norm)之间的相似度
@@ -42,24 +44,51 @@ def compute_dists(query_features, refer_features):
     # sorted_dists = np.sort(unsorted_dists)
     return idxs, unsorted_dists, sorted_dists
 
-refer_video = []
-copy_video = []
-with open("refer_list.txt", r) as f:
-    lines = f.readlines()
-for line in lines:
-    line = line.rstrip()
-    refer_video.append(line)
-with open("video.txt", r) as f:
-    lines = f.readlines()
-for line in lines:
-    line = line.rstrip()
-    copy_video.append(line)
+refer_video_num = []
+copy_video_num = []
 
-copy_video_h5 = h5py.File("videos-features.h5")
-copy_video_sum = copy_video_h5["000001.mp4"]
-for i in range(1, len(copy_video)):
-    append_video = copy_video_h5[copy_video[i]]
-    copy_video_sum = np.vstack((copy_video_sum, append_video))
-print(copy_video_sum.shape)
-#for in i range(0,len(refer_video)) 
-           
+with open("useful_train_test_groundtruth", 'r') as f:
+    lines = f.readlines()
+for line in lines:
+    line = line.rstrip()
+    line = line.split(" ")
+    refer_video_num.append(line[1])
+    copy_video_num.append(line[0])
+
+test_video = []
+with open("test_groundtruth", 'r') as f:
+    lines = f.readlines()
+for line in lines:
+    line = line.rstrip()
+    line = line.split(' ')
+    test_video.append(line[0])
+    #refer_video_num.append(line[1])
+
+#refer_video = np.load("refer_video_225.npy")
+#time_start = time.time()
+copy_video_h5 = h5py.File("/mnt/SSD/jzwang/dataset/features/copy-video-feature-1fps.h5")
+refer_video_h5 = h5py.File("/mnt/SSD/jzwang/dataset/features_1s/refer-video-features.h5")
+generate = []
+new = []
+for i in range(0,len(test_video)):
+    copy_video = copy_video_h5[test_video[i]].value
+    t1 = time.time()
+    sims = np.zeros((1, len(refer_video_num)))
+    for j in range(0, len(refer_video_num)):
+        refer_video = refer_video_h5[refer_video_num[j]].value
+        dis = np.dot(copy_video, refer_video.T)
+        mindis = np.min(dis)
+        sims[j] = mindis
+    unsorted_dists = 1 - sims
+    idxs = np.argsort(unsorted_dists)
+    t2 = time.time()
+    time_per = (t2-t1)
+    if i%100 ==0:
+        print(i)
+#np.save("idx1.npy",idxs)
+#time_end = time.time()
+#print("totally cost:",time_end - time_start)
+    result = (refer_video_num[int(idxs[0][0])])
+    new.append(result+' '+str(time_per))
+with open("test_shot_retrieve.txt", 'w') as f:
+    f.write("\n".join(new))
