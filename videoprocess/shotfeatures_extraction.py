@@ -112,7 +112,7 @@ class VideoFeatureExtractor(object):
                 vfeature = f_dim[start,end]
                 vfeature = vfeature.mean(axis=0, keepdims=True)
                 #norm
-                if num = 0:
+                if num == 0:
                     vtotal = vfeature
                 else:
                     vtotal = np.vstack((vtotal, vfeature))
