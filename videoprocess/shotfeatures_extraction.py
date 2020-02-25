@@ -95,7 +95,7 @@ class VideoFeatureExtractor(object):
         with open(txt ,'r') as f:
             lines = f.readlines()
         total_lines = int(lines[-1].rstrip().split(' ')[1])
-        print(total_lines)
+        #print(total_lines)
         f_dim = feature.shape[0]
         num = 0
         for line in lines:
@@ -108,8 +108,8 @@ class VideoFeatureExtractor(object):
             else:
                 start = round(line[0]*f_dim/total_lines)
                 end = round(line[1]*f_dim/total_lines)
-                print(start,end)
-                vfeature = f_dim[start,end]
+                #print(start,end)
+                vfeature = f_dim[start:end]
                 vfeature = vfeature.mean(axis=0, keepdims=True)
                 #norm
                 if num == 0:
