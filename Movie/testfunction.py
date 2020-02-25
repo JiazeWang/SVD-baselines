@@ -18,7 +18,7 @@ def shotagg(feature, txt):
             start = round(line[0]*f_dim/total_lines)
             end = round(line[1]*f_dim/total_lines)
             print(start,end)
-            vfeature = f_dim[start,end]
+            vfeature = feature[start:end]
             vfeature = vfeature.mean(axis=0, keepdims=True)
             #norm
             if num = 0:
