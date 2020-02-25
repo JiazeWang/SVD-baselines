@@ -103,7 +103,7 @@ class VideoFeatureExtractor(object):
             line = line.split(' ')
             line[0] = int(line[0])
             line[1] = int(line[1])
-            if (line[1]-line[0])*f_dim/total_lines < 1.5:
+            if (line[1]-line[0])*f_dim/total_lines < 0.5:
                 continue
             else:
                 start = round(line[0]*f_dim/total_lines)
