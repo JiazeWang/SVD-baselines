@@ -97,7 +97,7 @@ class VideoFeatureExtractor(object):
         total_lines = int(lines[-1].rstrip().split(' ')[1])
         #print(total_lines)
         f_dim = feature.shape[0]
-        num = 0
+        self.num = 0
         for line in lines:
             line = line.rstrip()
             line = line.split(' ')
@@ -112,11 +112,11 @@ class VideoFeatureExtractor(object):
                 vfeature = feature[start:end]
                 vfeature = vfeature.mean(axis=0, keepdims=True)
                 #norm
-                if num == 0:
+                if self.num == 0:
                     vtotal = vfeature
                 else:
                     vtotal = np.vstack((vtotal, vfeature))
-                num = num + 1
+                self.num = self.num + 1
         return vtotal
     
 
