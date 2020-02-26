@@ -66,8 +66,8 @@ for line in lines:
 
 #refer_video = np.load("refer_video_225.npy")
 #time_start = time.time()
-copy_video_h5 = h5py.File("/mnt/SSD/jzwang/dataset/features/copy-video-feature-1fps.h5")
-refer_video_h5 = h5py.File("/mnt/SSD/jzwang/dataset/features_1s/refer-video-features.h5")
+copy_video_h5 = h5py.File("/mnt/SSD/jzwang/dataset/features/copy-shot-feature-1fps.h5")
+refer_video_h5 = h5py.File("/mnt/SSD/jzwang/dataset/features_1s/refer-shot-feature-1fps.h5")
 generate = []
 new = []
 for i in range(0,len(test_video)):
@@ -76,18 +76,15 @@ for i in range(0,len(test_video)):
     sims = np.zeros((1, len(refer_video_num)))
     for j in range(0, len(refer_video_num)):
         refer_video = refer_video_h5[refer_video_num[j]].value
-        dis = np.dot(copy_video, refer_video.T)
-        mindis = np.min(dis)
-        sims[j] = mindis
+        sim = np.dot(copy_video, refer_video.T)
+        maxsim = np.max(sim)
+        sims[j] = maxsim
     unsorted_dists = 1 - sims
     idxs = np.argsort(unsorted_dists)
     t2 = time.time()
     time_per = (t2-t1)
     if i%100 ==0:
         print(i)
-#np.save("idx1.npy",idxs)
-#time_end = time.time()
-#print("totally cost:",time_end - time_start)
     result = (refer_video_num[int(idxs[0][0])])
     new.append(result+' '+str(time_per))
 with open("test_shot_retrieve.txt", 'w') as f:
