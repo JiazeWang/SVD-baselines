@@ -9,7 +9,7 @@
 import os
 import sys
 import h5py
-
+import time
 parenddir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 sys.path.append(parenddir)
 
@@ -19,6 +19,15 @@ import multiprocessing as mp
 from utils.util import *
 from utils.args import opt
 from utils.logger import logger
+refer_video_num = [] 
+copy_video_num = []
+with open("/mnt/SSD/jzwang/dataset/list/useful_train_test_groundtruth", 'r') as f:
+    lines = f.readlines()
+for line in lines:
+    line = line.rstrip()
+    line = line.split(" ")
+    refer_video_num.append(line[1])
+    copy_video_num.append(line[0])
 
 
 class VideoFeatureExtractor(object):
@@ -37,24 +46,16 @@ class VideoFeatureExtractor(object):
             self.procs.append(p)
 
     @staticmethod
-    def __normalize__(X):
-        X -= X.mean(axis=1, keepdims=True)
-        X /= np.linalg.norm(X, axis=1, keepdims=True) + 1e-15
-        return X
 
     def normalization(self, params):
-        featurepath = os.path.join(opt['featurepath'], 'refer-frames-features.h5')
-        fp = h5py.File(featurepath, mode='r')
-        index, video = params[0], params[1]
-        framefeatures = np.array(fp[video][()]).squeeze()
-        txt = os.path.join("/mnt/SSD/jzwang/dataset/shot", video[0:-4]+'.txt')
-        if framefeatures.ndim == 1:
-            framefeatures = np.array([framefeatures, framefeatures])
-        vfeature = self.__normalize__(framefeatures)
-        vfeature = self.__normalize__(vfeature)
-        #vfeature = vfeature.mean(axis=0, keepdims=True)
-        vfeature = self.shotagg(vfeature, txt)
-        vfeature = self.__normalize__(vfeature)
+        copy_featurepath = os.path.join(opt['featurepath'], 'copy-shot-feature-1fps.h5')
+        refer_featurepath = os.path.join(opt['featurepath'], 'refer-shot-feature-1fps.h5')
+        copy_fp = h5py.File(copy_featurepath, mode='r')
+        refer_fp = h5py.File(refer_featurepath, mode='r')
+        copy_video, groundtruth = params[0], params[1]
+        copy_features = np.array(copy_fp[copy_video][()])
+        #refer_features = np.array(refer_fp[copy_video][()])
+        vfeature = self.shotcompare(copy_features, refer_fp)
         self.vfeatures[video] = vfeature
         if index % 100 == 0:
             logger.info('index: {:6d}, video: {}'.format(index, video))
@@ -83,7 +84,7 @@ class VideoFeatureExtractor(object):
 
     def save_features(self):
         vfeatures = dict(self.vfeatures)
-        vfeaturepath = os.path.join(opt['featurepath'], '-shot-feature-1fps.h5')
+        vfeaturepath = os.path.join(opt['featurepath'], 'search-max-shot.h5')
         fp = h5py.File(vfeaturepath, mode='w')
         for video in vfeatures:
             feature = vfeatures[video]
@@ -91,32 +92,24 @@ class VideoFeatureExtractor(object):
         fp.close()
         logger.info('saving feature done')
     
-    def shotagg(self, feature, txt):
-        with open(txt ,'r') as f:
-            lines = f.readlines()
-        total_lines = int(lines[-1].rstrip().split(' ')[1])
-        #print(total_lines)
-        f_dim = feature.shape[0]
-        self.num = 0
-        for line in lines:
-            line = line.rstrip()
-            line = line.split(' ')
-            line[0] = int(line[0])
-            line[1] = int(line[1])
-            start = round(line[0]*f_dim/total_lines)
-            end = round(line[1]*f_dim/total_lines)
-                #print(start,end)
-            if end-start==0:
-                continue
-            vfeature = feature[start:end]
-            vfeature = vfeature.mean(axis=0, keepdims=True)
-                #norm
-            if self.num == 0:
-                vtotal = vfeature
-            else:
-                vtotal = np.vstack((vtotal, vfeature))
-            self.num = self.num + 1
-        return vtotal
+    def shotcompare(self, feature, refer_fp):     
+        copy_video = feature
+        #t1 = time.time()
+        sims = np.zeros((len(refer_video_num)))
+        for j in range(0, len(refer_video_num)):
+            refer_video = refer_fp[refer_video_num[j]].value
+            sim = np.dot(copy_video, refer_video.T)
+            """
+            sim_total=np.zeros(sim.shape[0])
+            for k in range(0,(sim.shape[0])):
+                sim_v = np.max(sim[k])
+                sim_total[k] = (sim_v)
+            #print(sim_total.shape)
+            maxsim = np.sum(sim_total)/len(sim_total)
+            """
+            maxsim = np.max(sim)
+            sims[j] = maxsim
+        return sims
     
 
 def main():
