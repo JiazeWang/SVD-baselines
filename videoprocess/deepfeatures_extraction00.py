@@ -74,7 +74,7 @@ def deep_feature_extraction():
 
 
     #model = vgg16(pretrained=True).to(opt['device'])
-    net = TSN(num_class=1000, num_segments=1, modality="RGB",
+    net = TSN(num_class=20314, num_segments=1, modality="RGB",
           base_model='resnet50',
           consensus_type='avg',
           dropout=0.8)
