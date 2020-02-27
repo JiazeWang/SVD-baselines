@@ -115,7 +115,7 @@ class VideoFeatureExtractor(object):
                 vtotal = vfeature
             else:
                 vtotal = np.vstack((vtotal, vfeature))
-                self.num = self.num + 1
+            self.num = self.num + 1
         return vtotal
     
 
