@@ -52,7 +52,7 @@ class VideoFeatureExtractor(object):
         refer_featurepath = os.path.join(opt['featurepath'], 'refer-shot-feature-1fps.h5')
         copy_fp = h5py.File(copy_featurepath, mode='r')
         refer_fp = h5py.File(refer_featurepath, mode='r')
-        copy_video, groundtruth = params[0], params[1]
+        index, copy_video = params[0], params[1]
         copy_features = np.array(copy_fp[copy_video][()])
         #refer_features = np.array(refer_fp[copy_video][()])
         vfeature = self.shotcompare(copy_features, refer_fp)
