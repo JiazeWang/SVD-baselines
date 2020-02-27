@@ -103,19 +103,18 @@ class VideoFeatureExtractor(object):
             line = line.split(' ')
             line[0] = int(line[0])
             line[1] = int(line[1])
-            if (line[1]-line[0])*f_dim/total_lines < 0.5:
-                continue
-            else:
-                start = round(line[0]*f_dim/total_lines)
-                end = round(line[1]*f_dim/total_lines)
+            start = round(line[0]*f_dim/total_lines)
+            end = round(line[1]*f_dim/total_lines)
                 #print(start,end)
-                vfeature = feature[start:end]
-                vfeature = vfeature.mean(axis=0, keepdims=True)
+            if end-start==0:
+                continue
+            vfeature = feature[start:end]
+            vfeature = vfeature.mean(axis=0, keepdims=True)
                 #norm
-                if self.num == 0:
-                    vtotal = vfeature
-                else:
-                    vtotal = np.vstack((vtotal, vfeature))
+            if self.num == 0:
+                vtotal = vfeature
+            else:
+                vtotal = np.vstack((vtotal, vfeature))
                 self.num = self.num + 1
         return vtotal
     
