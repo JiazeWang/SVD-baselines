@@ -50,7 +50,7 @@ class VideoFeatureExtractor(object):
         X -= X.mean(axis=1, keepdims=True)
         X /= np.linalg.norm(X, axis=1, keepdims=True) + 1e-15
         return X
-        
+
     def normalization(self, params):
         copy_featurepath = os.path.join(opt['featurepath'], 'copy-shot-feature-1fps.h5')
         refer_featurepath = os.path.join(opt['featurepath'], 'refer-shot-feature-1fps.h5')
@@ -63,7 +63,8 @@ class VideoFeatureExtractor(object):
         self.vfeatures[copy_video] = vfeature
         if index % 100 == 0:
             logger.info('index: {:6d}, video: {}'.format(index, video))
-        fp.close()
+        copy_fp.close()
+        refer_fp.close()
 
     def worker(self, idx):
         while True:
