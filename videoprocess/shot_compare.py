@@ -56,7 +56,7 @@ class VideoFeatureExtractor(object):
         copy_features = np.array(copy_fp[copy_video][()])
         #refer_features = np.array(refer_fp[copy_video][()])
         vfeature = self.shotcompare(copy_features, refer_fp)
-        self.vfeatures[video] = vfeature
+        self.vfeatures[copy_video] = vfeature
         if index % 100 == 0:
             logger.info('index: {:6d}, video: {}'.format(index, video))
         fp.close()
