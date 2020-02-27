@@ -46,12 +46,18 @@ class VideoFeatureExtractor(object):
             self.procs.append(p)
 
     @staticmethod
+    def __normalize__(X):
+        X -= X.mean(axis=1, keepdims=True)
+        X /= np.linalg.norm(X, axis=1, keepdims=True) + 1e-15
+        return X
+        
     def normalization(self, params):
         copy_featurepath = os.path.join(opt['featurepath'], 'copy-shot-feature-1fps.h5')
         refer_featurepath = os.path.join(opt['featurepath'], 'refer-shot-feature-1fps.h5')
         copy_fp = h5py.File(copy_featurepath, mode='r')
         refer_fp = h5py.File(refer_featurepath, mode='r')
         index, copy_video = params[0], params[1]
+
         copy_features = np.array(copy_fp[copy_video][()])
         vfeature = self.shotcompare(copy_features, refer_fp)
         self.vfeatures[copy_video] = vfeature
@@ -62,7 +68,6 @@ class VideoFeatureExtractor(object):
     def worker(self, idx):
         while True:
             params = self.input.get()
-            print(params)
             if params is None:
                 self.input.put(None)
                 break
