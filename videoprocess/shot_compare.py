@@ -62,7 +62,7 @@ class VideoFeatureExtractor(object):
         vfeature = self.shotcompare(copy_features, refer_fp)
         self.vfeatures[copy_video] = vfeature
         if index % 100 == 0:
-            logger.info('index: {:6d}, video: {}'.format(index, video))
+            logger.info('index: {:6d}, video: {}'.format(index, copy_video))
         copy_fp.close()
         refer_fp.close()
 
