@@ -47,7 +47,7 @@ class VideoFeatureExtractor(object):
         fp = h5py.File(featurepath, mode='r')
         index, video = params[0], params[1]
         framefeatures = np.array(fp[video][()]).squeeze()
-        txt = os.path.join("/mnt/SSD/jzwang/dataset/shot", video[0:-4]+'.txt')
+        txt = os.path.join("/mnt/SSD/jzwang/dataset/shot_movie", video[0:-4]+'.txt')
         if framefeatures.ndim == 1:
             framefeatures = np.array([framefeatures, framefeatures])
         vfeature = self.__normalize__(framefeatures)
