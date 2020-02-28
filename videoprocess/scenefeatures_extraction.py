@@ -110,7 +110,7 @@ class VideoFeatureExtractor(object):
             featurenew[2] = featurenew[2] / len(itemindex2)
 
             itemindex3 = np.argwhere(clustering.labels_ == 3)
-            for i in range(len(itemindex3):
+            for i in range(len(itemindex3)):
                 featurenew[3] = featurenew[3] + feature[int(itemindex3[i])]
             featurenew[3] = featurenew[3] / len(itemindex3)
 
