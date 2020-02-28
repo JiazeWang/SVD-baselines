@@ -91,32 +91,35 @@ class VideoFeatureExtractor(object):
         logger.info('saving feature done')
     
     def shotagg(self, feature):
-        featurenew = np.zeros((5, 4096))
-        clustering = AgglomerativeClustering(5).fit(feature)
-        itemindex0 = np.argwhere(clustering.labels_ == 0)
-        for i in range(len(itemindex0)):
-            featurenew[0] = featurenew[0] + feature[int(itemindex0[i])]
-        featurenew[0] = featurenew[0] / len(itemindex0)
+        if feature.shape[0]>5:
+            featurenew = np.zeros((5, 4096))
+            clustering = AgglomerativeClustering(5).fit(feature)
+            itemindex0 = np.argwhere(clustering.labels_ == 0)
+            for i in range(len(itemindex0)):
+                featurenew[0] = featurenew[0] + feature[int(itemindex0[i])]
+            featurenew[0] = featurenew[0] / len(itemindex0)
 
-        itemindex1 = np.argwhere(clustering.labels_ == 1)
-        for i in range(len(itemindex0)):
-            featurenew[1] = featurenew[1] + feature[int(itemindex0[i])]
-        featurenew[1] = featurenew[1] / len(itemindex1)
+            itemindex1 = np.argwhere(clustering.labels_ == 1)
+            for i in range(len(itemindex0)):
+                featurenew[1] = featurenew[1] + feature[int(itemindex0[i])]
+            featurenew[1] = featurenew[1] / len(itemindex1)
 
-        itemindex2 = np.argwhere(clustering.labels_ == 2)
-        for i in range(len(itemindex0)):
-            featurenew[2] = featurenew[2] + feature[int(itemindex0[i])]
-        featurenew[2] = featurenew[2] / len(itemindex2)
+            itemindex2 = np.argwhere(clustering.labels_ == 2)
+            for i in range(len(itemindex0)):
+                featurenew[2] = featurenew[2] + feature[int(itemindex0[i])]
+            featurenew[2] = featurenew[2] / len(itemindex2)
 
-        itemindex3 = np.argwhere(clustering.labels_ == 3)
-        for i in range(len(itemindex0)):
-            featurenew[3] = featurenew[3] + feature[int(itemindex0[i])]
-        featurenew[3] = featurenew[3] / len(itemindex3)
+            itemindex3 = np.argwhere(clustering.labels_ == 3)
+            for i in range(len(itemindex0)):
+                featurenew[3] = featurenew[3] + feature[int(itemindex0[i])]
+            featurenew[3] = featurenew[3] / len(itemindex3)
 
-        itemindex4 = np.argwhere(clustering.labels_ == 4)
-        for i in range(len(itemindex0)):
-            featurenew[4] = featurenew[4] + feature[int(itemindex0[i])]
-        featurenew[4] = featurenew[4] / len(itemindex4)
+            itemindex4 = np.argwhere(clustering.labels_ == 4)
+            for i in range(len(itemindex0)):
+                featurenew[4] = featurenew[4] + feature[int(itemindex0[i])]
+            featurenew[4] = featurenew[4] / len(itemindex4)
+        else:
+            featurenew = feature
         
         return featurenew
     
