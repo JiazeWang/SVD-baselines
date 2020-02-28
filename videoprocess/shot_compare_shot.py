@@ -52,8 +52,8 @@ class VideoFeatureExtractor(object):
         return X
 
     def normalization(self, params):
-        copy_featurepath = os.path.join(opt['featurepath'], 'copy-shot.h5')
-        refer_featurepath = os.path.join(opt['featurepath'], 'refer-shot.h5')
+        copy_featurepath = os.path.join(opt['featurepath'], 'copy-shot2.h5')
+        refer_featurepath = os.path.join(opt['featurepath'], 'refer-shot2.h5')
         copy_fp = h5py.File(copy_featurepath, mode='r')
         refer_fp = h5py.File(refer_featurepath, mode='r')
         index, copy_video = params[0], params[1]
