@@ -58,8 +58,9 @@ class VideoFeatureExtractor(object):
         refer_fp = h5py.File(refer_featurepath, mode='r')
         index, copy_video = params[0], params[1]
         copy_features = np.array(copy_fp[copy_video][()])
-        vfeature = self.shotcompare(copy_features, refer_fp)
-        self.vfeatures[copy_video] = vfeature
+        vfeature, vfeature_avg = self.shotcompare(copy_features, refer_fp)
+        self.vfeatures[copy_video[0:-4] + 'max'] = vfeature
+        self.vfeatures[copy_video[0:-4] + 'avg'] = vfeature_avg
         if index % 1 == 0:
             logger.info('index: {:6d}, video: {}'.format(index, copy_video))
         copy_fp.close()
@@ -100,20 +101,22 @@ class VideoFeatureExtractor(object):
         copy_video = feature
         #t1 = time.time()
         sims = np.zeros((len(refer_video_num)))
+        simsavg = np.zeros((len(refer_video_num)))
         for j in range(0, len(refer_video_num)):
             refer_video = refer_fp[refer_video_num[j]].value
             sim = np.dot(copy_video, refer_video.T)
-            """
+            
             sim_total=np.zeros(sim.shape[0])
             for k in range(0,(sim.shape[0])):
                 sim_v = np.max(sim[k])
                 sim_total[k] = (sim_v)
             #print(sim_total.shape)
-            maxsim = np.sum(sim_total)/len(sim_total)
-            """
+            avgsim = np.sum(sim_total)/len(sim_total)
+            
             maxsim = np.max(sim)
             sims[j] = maxsim
-        return sims
+            simsavg[j] = avgsim
+        return sims, simsavg
     
 
 def main():
